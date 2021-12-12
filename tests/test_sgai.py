@@ -4,7 +4,6 @@
 
 import pytest
 
-
 from sgai import sgai
 
 
