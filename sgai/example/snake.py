@@ -3,6 +3,7 @@
 
 import random
 from enum import Enum
+from typing import Tuple
 
 import numpy as np
 print("importing pygame")
@@ -14,7 +15,7 @@ SPEED = 100
 
 pygame.init()
 print("initialized pygame")
-font = pygame.font.Font("Arial", 25)
+font = pygame.font.Font("sgai/example/fonts/arial.ttf", 25)
 
 
 class Direction(Enum):
@@ -93,7 +94,7 @@ class SnakeGame:
         if self.food in self.snake:
             self._place_food()
 
-    def play_step(self, action):
+    def play_step(self, action) -> Tuple[int, bool, int]:
         self.frame_iteration_number += 1
         # 1. collect user input
         for event in pygame.event.get():

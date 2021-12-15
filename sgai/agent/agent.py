@@ -19,18 +19,18 @@ def debug(msg):
 
 
 class Agent:
-    def __init__(self) -> None:
+    def __init__(self, epsilon: float = 0, gamma: float = 0.9, input_size = 11, hidden_size = 256, output_size = 3) -> None:
         self.number_of_games = 0
-        self.epsilon = 0  # Controls randomness
-        self.gamma = 0.9  # Discount rate
+        self.epsilon = epsilon  # Controls randomness
+        self.gamma = gamma  # Discount rate
         self.memory = deque(maxlen=MAX_MEMORY)  # popleft()
         # TODO Change to be dynamic based on IO complexity
-        self.model = LinearQNet(11, 256, 3)
+        self.model = LinearQNet(input_size, hidden_size, output_size)
         self.trainer = QTrainer(
             self.model, learning_rate=LEARNING_RATE, gamma=self.gamma
         )
 
-    def get_state(self, game):
+    def get_state(self, game): #########
         head = game.snake[0]
         point_left = GamePoint(head.x - 20, head.y)
         point_right = GamePoint(head.x + 20, head.y)
@@ -69,7 +69,7 @@ class Agent:
             game.food.y < game.head.y,  # Food up
             game.food.y > game.head.y,  # Food down
         ]
-        debug(state)
+        # debug(state)
         return np.array(state, dtype=int)
 
     def remember(self, state, action, reward, next_state, game_state):
@@ -120,7 +120,7 @@ def train():
         final_move = agent.get_action(old_state)
 
         # Performe the Move and get the new State
-        reward, game_state, game_score = game.play_step(final_move)
+        reward, game_over, game_score = game.play_step(final_move)
         new_state = agent.get_state(game)
 
         # Train the short memory ON EACH MOVE
@@ -129,7 +129,7 @@ def train():
             action=final_move,
             reward=reward,
             next_state=new_state,
-            game_state=game_state,
+            game_state=game_over,
         )
 
         # Remember the state for long term training
@@ -138,10 +138,10 @@ def train():
             action=final_move,
             reward=reward,
             next_state=new_state,
-            game_state=game_state,
+            game_state=game_over,
         )
 
-        if game_state:
+        if game_over:
             # Train long memory, plot the result
             game.reset_game_state()
             agent.number_of_games += 1

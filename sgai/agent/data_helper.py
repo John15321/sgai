@@ -20,4 +20,5 @@ def plot(scores, mean_scores):
     plt.text(len(scores) - 1, scores[-1], str(scores[-1]))
     plt.text(len(mean_scores) - 1, mean_scores[-1], str(mean_scores[-1]))
     plt.show(block=False)
+    plt.legend(["Current score", "Avarage score"], loc="upper left")
     plt.pause(0.1)
