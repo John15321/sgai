@@ -6,9 +6,9 @@ from enum import Enum
 from typing import Tuple
 
 import numpy as np
-print("importing pygame")
 import pygame
-from ..example.config import GameColors
+
+from sgai.example.config import GameColors
 
 BLOCK_SIZE = 20
 SPEED = 100

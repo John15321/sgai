@@ -1,19 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import pygame
+from abc import ABC
 
-# from agent.game_agent import train
-# from game.snake_game import SnakeGame
+import pygame
 
 from sgai.agent import train
 from sgai.example import SnakeGame
 
-from abc import ABC
+# from agent.game_agent import train
+# from game.snake_game import SnakeGame
+
 
 class Trainer(ABC):
-
-
     def get_state(self):
         pass
 
@@ -21,7 +20,6 @@ class Trainer(ABC):
         pass
 
     pass
-
 
 
 if __name__ == "__main__":

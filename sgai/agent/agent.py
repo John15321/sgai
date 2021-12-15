@@ -7,9 +7,9 @@ from typing import List, Tuple
 
 import numpy as np
 import torch
-from .config import BATCH_SIZE, LEARNING_RATE, MAX_MEMORY
 
 from ..example.snake import Direction, GamePoint, SnakeGame
+from .config import BATCH_SIZE, LEARNING_RATE, MAX_MEMORY
 from .data_helper import plot
 from .model import LinearQNet, QTrainer
 
@@ -19,7 +19,14 @@ def debug(msg):
 
 
 class Agent:
-    def __init__(self, epsilon: float = 0, gamma: float = 0.9, input_size = 11, hidden_size = 256, output_size = 3) -> None:
+    def __init__(
+        self,
+        epsilon: float = 0,
+        gamma: float = 0.9,
+        input_size=11,
+        hidden_size=256,
+        output_size=3,
+    ) -> None:
         self.number_of_games = 0
         self.epsilon = epsilon  # Controls randomness
         self.gamma = gamma  # Discount rate
@@ -30,7 +37,7 @@ class Agent:
             self.model, learning_rate=LEARNING_RATE, gamma=self.gamma
         )
 
-    def get_state(self, game): #########
+    def get_state(self, game):  #########
         head = game.snake[0]
         point_left = GamePoint(head.x - 20, head.y)
         point_right = GamePoint(head.x + 20, head.y)
