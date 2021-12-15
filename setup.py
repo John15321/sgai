@@ -33,17 +33,14 @@ test_requirements = [
 setup(
     author="Jan Bronicki",
     author_email="janbronicki@gmail.com",
-    python_requires=">=3.5",
+    python_requires=">=3.8",
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
     ],
     description="""Simple Game AI package allows to easily define an interface
     for a game and train a simple neural net to play it""",
@@ -60,6 +57,6 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/John15321/sgai",
-    version="0.0.1",
+    version="0.0.2",
     zip_safe=False,
 )
