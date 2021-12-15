@@ -7,11 +7,15 @@ from typing import List, Tuple
 
 import numpy as np
 import torch
-from agent.config import BATCH_SIZE, LEARNING_RATE, MAX_MEMORY
-from game.snake_game_ai import Direction, GamePoint, SnakeGame
+from .config import BATCH_SIZE, LEARNING_RATE, MAX_MEMORY
 
+from ..example.snake import Direction, GamePoint, SnakeGame
 from .data_helper import plot
 from .model import LinearQNet, QTrainer
+
+
+def debug(msg):
+    print(f"DEBUG: {msg}")
 
 
 class Agent:
@@ -65,7 +69,7 @@ class Agent:
             game.food.y < game.head.y,  # Food up
             game.food.y > game.head.y,  # Food down
         ]
-
+        debug(state)
         return np.array(state, dtype=int)
 
     def remember(self, state, action, reward, next_state, game_state):
@@ -116,7 +120,7 @@ def train():
         final_move = agent.get_action(old_state)
 
         # Performe the Move and get the new State
-        reward, game_state, score = game.play_step(final_move)
+        reward, game_state, game_score = game.play_step(final_move)
         new_state = agent.get_state(game)
 
         # Train the short memory ON EACH MOVE
@@ -144,15 +148,15 @@ def train():
             agent.train_long_memory()
 
             # Save the newest record
-            if score > record:
-                record = score
+            if game_score > record:
+                record = game_score
                 agent.model.save_model()
 
-            print(f"Game {agent.number_of_games}, Score {score}, Record {record}")
+            print(f"Game {agent.number_of_games}, Score {game_score}, Record {record}")
 
             # Plot scores
-            plot_scores.append(score)
-            total_score += score
+            plot_scores.append(game_score)
+            total_score += game_score
             mean_score = total_score / agent.number_of_games
             plot_mean_scores.append(mean_score)
             plot(plot_scores, plot_mean_scores)

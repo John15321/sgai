@@ -12,3 +12,4 @@ grip
 pytest
 pytest-runner
 
+pygame

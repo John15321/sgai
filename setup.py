@@ -45,7 +45,8 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
     ],
-    description="Simple Game AI package allows to easly define an interface for a game and train a simple neural net to play it",
+    description="""Simple Game AI package allows to easily define an interface
+    for a game and train a simple neural net to play it""",
     install_requires=install_requires,
     dependency_links=dependency_links,
     license="MIT license",

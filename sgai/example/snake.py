@@ -5,14 +5,15 @@ import random
 from enum import Enum
 
 import numpy as np
+print("importing pygame")
 import pygame
-from example.config import GameColors
+from ..example.config import GameColors
 
 BLOCK_SIZE = 20
 SPEED = 100
 
-
 pygame.init()
+print("initialized pygame")
 font = pygame.font.Font("Arial", 25)
 
 
