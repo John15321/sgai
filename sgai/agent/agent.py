@@ -5,12 +5,9 @@ import random
 from collections import deque
 from typing import List, Tuple
 
-import numpy as np
 import torch
 
-from ..example.snake import Direction, GamePoint, SnakeGame
 from .config import BATCH_SIZE, LEARNING_RATE, MAX_MEMORY
-from .data_helper import plot
 from .model import LinearQNet, QTrainer
 
 
@@ -37,47 +34,48 @@ class Agent:
             self.model, learning_rate=LEARNING_RATE, gamma=self.gamma
         )
 
-    def get_state(self, game):  #########
-        head = game.snake[0]
-        point_left = GamePoint(head.x - 20, head.y)
-        point_right = GamePoint(head.x + 20, head.y)
-        point_up = GamePoint(head.x, head.y - 20)
-        point_down = GamePoint(head.x, head.y + 20)
+    # def get_state(self, game):
+    #     head = game.snake[0]
+    #     point_left = GamePoint(head.x - 20, head.y)
+    #     point_right = GamePoint(head.x + 20, head.y)
+    #     point_up = GamePoint(head.x, head.y - 20)
+    #     point_down = GamePoint(head.x, head.y + 20)
 
-        left_direction = game.direction == Direction.LEFT
-        right_direction = game.direction == Direction.RIGHT
-        up_direction = game.direction == Direction.UP
-        down_direction = game.direction == Direction.DOWN
+    #     left_direction = game.direction == Direction.LEFT
+    #     right_direction = game.direction == Direction.RIGHT
+    #     up_direction = game.direction == Direction.UP
+    #     down_direction = game.direction == Direction.DOWN
 
-        state = [
-            # Danger straight
-            (right_direction and game.is_collision(point_right))
-            or (left_direction and game.is_collision(point_left))
-            or (up_direction and game.is_collision(point_up))
-            or (down_direction and game.is_collision(point_down)),
-            # Danger right
-            (up_direction and game.is_collision(point_right))
-            or (down_direction and game.is_collision(point_left))
-            or (left_direction and game.is_collision(point_up))
-            or (right_direction and game.is_collision(point_down)),
-            # Danger left
-            (down_direction and game.is_collision(point_right))
-            or (up_direction and game.is_collision(point_left))
-            or (right_direction and game.is_collision(point_up))
-            or (left_direction and game.is_collision(point_down)),
-            # Move direction
-            left_direction,
-            right_direction,
-            up_direction,
-            down_direction,
-            # Food location
-            game.food.x < game.head.x,  # Food left
-            game.food.x > game.head.x,  # Food right
-            game.food.y < game.head.y,  # Food up
-            game.food.y > game.head.y,  # Food down
-        ]
-        # debug(state)
-        return np.array(state, dtype=int)
+    #     state = [
+    #         # Danger straight
+    #         (right_direction and game.is_collision(point_right))
+    #         or (left_direction and game.is_collision(point_left))
+    #         or (up_direction and game.is_collision(point_up))
+    #         or (down_direction and game.is_collision(point_down)),
+    #         # Danger right
+    #         (up_direction and game.is_collision(point_right))
+    #         or (down_direction and game.is_collision(point_left))
+    #         or (left_direction and game.is_collision(point_up))
+    #         or (right_direction and game.is_collision(point_down)),
+    #         # Danger left
+    #         (down_direction and game.is_collision(point_right))
+    #         or (up_direction and game.is_collision(point_left))
+    #         or (right_direction and game.is_collision(point_up))
+    #         or (left_direction and game.is_collision(point_down)),
+    #         # Move direction
+    #         left_direction,
+    #         right_direction,
+    #         up_direction,
+    #         down_direction,
+    #         # Food location
+    #         game.food.x < game.head.x,  # Food left
+    #         game.food.x > game.head.x,  # Food right
+    #         game.food.y < game.head.y,  # Food up
+    #         game.food.y > game.head.y,  # Food down
+    #     ]
+
+    #     # debug(state)
+    #     return np.array(state, dtype=int)
 
     def remember(self, state, action, reward, next_state, game_state):
         # popleft if MAX_MEMORY is reached
@@ -112,58 +110,58 @@ class Agent:
         return final_move
 
 
-def train():
-    plot_scores = []
-    plot_mean_scores = []
-    total_score = 0
-    record = 0
-    agent = Agent()
-    game = SnakeGame()
-    while True:
-        # Get old state
-        old_state = agent.get_state(game)
+# def train():
+#     plot_scores = []
+#     plot_mean_scores = []
+#     total_score = 0
+#     record = 0
+#     agent = Agent()
+#     game = SnakeGame()
+#     while True:
+#         # Get old state
+#         old_state = agent.get_state(game)
 
-        # Get Move based on the State
-        final_move = agent.get_action(old_state)
+#         # Get Move based on the State
+#         final_move = agent.get_action(old_state)
 
-        # Performe the Move and get the new State
-        reward, game_over, game_score = game.play_step(final_move)
-        new_state = agent.get_state(game)
+#         # Performe the Move and get the new State
+#         reward, game_over, game_score = game.play_step(final_move)
+#         new_state = agent.get_state(game)
 
-        # Train the short memory ON EACH MOVE
-        agent.train_short_memory(
-            state=old_state,
-            action=final_move,
-            reward=reward,
-            next_state=new_state,
-            game_state=game_over,
-        )
+#         # Train the short memory ON EACH MOVE
+#         agent.train_short_memory(
+#             state=old_state,
+#             action=final_move,
+#             reward=reward,
+#             next_state=new_state,
+#             game_state=game_over,
+#         )
 
-        # Remember the state for long term training
-        agent.remember(
-            state=old_state,
-            action=final_move,
-            reward=reward,
-            next_state=new_state,
-            game_state=game_over,
-        )
+#         # Remember the state for long term training
+#         agent.remember(
+#             state=old_state,
+#             action=final_move,
+#             reward=reward,
+#             next_state=new_state,
+#             game_state=game_over,
+#         )
 
-        if game_over:
-            # Train long memory, plot the result
-            game.reset_game_state()
-            agent.number_of_games += 1
-            agent.train_long_memory()
+#         if game_over:
+#             # Train long memory, plot the result
+#             game.reset_game_state()
+#             agent.number_of_games += 1
+#             agent.train_long_memory()
 
-            # Save the newest record
-            if game_score > record:
-                record = game_score
-                agent.model.save_model()
+#             # Save the newest record
+#             if game_score > record:
+#                 record = game_score
+#                 agent.model.save_model()
 
-            print(f"Game {agent.number_of_games}, Score {game_score}, Record {record}")
+#          print(f"Game {agent.number_of_games}, Score {game_score}, Record {record}")
 
-            # Plot scores
-            plot_scores.append(game_score)
-            total_score += game_score
-            mean_score = total_score / agent.number_of_games
-            plot_mean_scores.append(mean_score)
-            plot(plot_scores, plot_mean_scores)
+#             # Plot scores
+#             plot_scores.append(game_score)
+#             total_score += game_score
+#             mean_score = total_score / agent.number_of_games
+#             plot_mean_scores.append(mean_score)
+#             plot(plot_scores, plot_mean_scores)

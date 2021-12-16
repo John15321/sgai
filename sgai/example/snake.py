@@ -14,7 +14,6 @@ BLOCK_SIZE = 20
 SPEED = 100
 
 pygame.init()
-print("initialized pygame")
 font = pygame.font.Font("sgai/example/fonts/arial.ttf", 25)
 
 
