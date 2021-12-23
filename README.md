@@ -11,15 +11,6 @@
 -   Documentation: https://John15321.github.io/sgai
     
 
-## Features
-
--   TODO
-
 ## Credits
 
 This package was created with [Cookiecutter](https://github.com/cookiecutter/cookiecutter) and the [giswqs/pypackage](https://github.com/giswqs/pypackage) project template.
-
-
-```bash
-python setup.py sdist
-```
