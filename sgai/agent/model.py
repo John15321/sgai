@@ -19,7 +19,6 @@ class LinearQNet(nn.Module):
         x = self.linear2(x)
         return x
 
-    # TODO CHENGE TO USE PATHLIB
     def save_model(self, file_name="model.pth"):
         model_folder_path = "./model"
         if not os.path.exists(model_folder_path):
@@ -43,17 +42,14 @@ class QTrainer:
         action = torch.tensor(action, dtype=torch.long)
         reward = torch.tensor(reward, dtype=torch.float)
 
-        # Handle multiple training sizes
-        # If its not len 1 we have it in (n, x) shape
         if len(state.shape) == 1:
-            # We have 1 number, we want it as (1, x)
             state = torch.unsqueeze(state, 0)
             next_state = torch.unsqueeze(next_state, 0)
             action = torch.unsqueeze(action, 0)
             reward = torch.unsqueeze(reward, 0)
             game_state = (game_state,)
 
-        # 1: predicted Q values with current state
+        # Predicted Q values with current state
         prediction = self.model(state)
         target = prediction.clone()
         for each_game_state in range(len(game_state)):
@@ -67,10 +63,7 @@ class QTrainer:
                 torch.argmax(action[each_game_state]).item()
             ] = Q_new
 
-        # 2: Q_new = r + y * max(next_predicted Q value) -> only do this if game_state
-        # is not done
-        # pred.clone()
-        # preds[argmax(action)] = Q_new
+        # Q new = r + y * max(prediction Q value)
         self.optimizer.zero_grad()
         loss = self.criterion(target, prediction)
         loss.backward()

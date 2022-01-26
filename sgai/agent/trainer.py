@@ -12,10 +12,17 @@ from sgai.agent.data_helper import plot
 
 
 class Trainer(ABC):
-    def __init__(self, game, input_size: int, output_size: int):
+    def __init__(
+        self,
+        game,
+        input_size: int,
+        output_size: int,
+        hidden_size: int,
+    ):
         self.game = game
         self.input_size = input_size
         self.output_size = output_size
+        self.hidden_size = hidden_size
 
     @abstractmethod
     def get_state(self) -> np.ndarray:
@@ -30,17 +37,21 @@ class Trainer(ABC):
         plot_mean_scores = []
         total_score = 0
         record = 0
-        agent = Agent()
-        # self.game = SnakeGame() # # # # # # # # # #
+        agent = Agent(
+            input_size=self.input_size,
+            output_size=self.output_size,
+            hidden_size=self.hidden_size,
+        )
         while True:
-            # Get old state
+            # Get the old state
             old_state = self.get_state()
 
-            # Get Move based on the State
+            # Get the move based on the State
             final_move = agent.get_action(old_state)
 
-            # Performe the Move and get the new State
-            reward, game_over, game_score = self.game.play_step(final_move)
+            # Perform the Move and get the new State
+            reward, game_over, game_score = self.perform_action(final_move)
+            # print(f"play step: {reward, game_over, game_score}")
             new_state = self.get_state()
 
             # Train the short memory ON EACH MOVE
@@ -70,27 +81,17 @@ class Trainer(ABC):
                 # Save the newest record
                 if game_score > record:
                     record = game_score
-                    agent.model.save_model()
+                    agent.model.save_model(file_name=model_file)
 
                 print(
-                    f"Game {agent.number_of_games}, Score {game_score}, Record {record}"
+                    f"Game {agent.number_of_games}, "
+                    f"Score {game_score}, "
+                    f"Record {record}"
                 )
 
-                # Plot scores
+                # Plot the scores
                 plot_scores.append(game_score)
                 total_score += game_score
                 mean_score = total_score / agent.number_of_games
                 plot_mean_scores.append(mean_score)
                 plot(plot_scores, plot_mean_scores)
-
-
-# get state:
-#   * state of the game (where is the snake etc)
-
-
-# perform action
-#   * get predicted action and use it in the game
-#    Returns immediate result of the action
-#   * reward from previous action
-#   * current score
-#   * game state (if its over or not)
